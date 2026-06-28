@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <meta name="description" content="The Script — оригинальный русскоязычный веб-комикс. Графическая история о мире, который кажется идеальным." />
+  <meta property="og:title" content="The Script — веб-комикс" />
+  <meta property="og:description" content="Графическая история о мире, который кажется идеальным, и людях, которые оказываются там, где не должны были оказаться." />
+  <meta property="og:image" content="arc/thescriptOBfinal.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>The Script — веб-комикс</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #FF1E1E;
+      --red-dark: #8B0000;
+      --red-mid: #C0392B;
+      --black: #0A0A0A;
+      --black2: #111111;
+      --black3: #1A1A1A;
+      --black4: #222222;
+      --white: #EAEAEA;
+      --gray: #888888;
+      --gray2: #555555;
+      --t: 0.2s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 70px;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: 70px;
+      background: rgba(10,10,10,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,30,30,0.12);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(8,8,8,0.95);
+      border-bottom-color: rgba(255,30,30,0.25);
+    }
+
+    .nav-in {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--red);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .logo:hover .logo-icon {
+      box-shadow: 0 0 24px rgba(255,30,30,0.6), 0 0 60px rgba(255,30,30,0.2);
+    }
+
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    }
+
+    .logo-icon svg { width: 20px; height: 20px; position: relative; z-index: 1; }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .logo-wordmark {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-family: 'Georgia', serif;
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--red);
+      text-transform: uppercase;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-a {
+      padding: 8px 14px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+      background: none;
+      border: none;
+      transition: color var(--t), background var(--t);
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-a::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 20px; height: 2px;
+      background: var(--red);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-a:hover, .nav-a.active {
+      color: #fff;
+    }
+
+    .nav-a:hover::after, .nav-a.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+
+    .nav-sep {
+      width: 1px; height: 28px;
+      background: rgba(255,255,255,0.08);
+      margin: 0 6px;
+      flex-shrink: 0;
+    }
+
+    .nav-social {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 3px;
+      border: 1px solid transparent;
+      opacity: 0.4;
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-social:hover {
+      opacity: 1;
+      border-color: rgba(255,30,30,0.3);
+      background: rgba(255,30,30,0.08);
+    }
+
+    .nav-social img {
+      width: 18px; height: 18px;
+      filter: brightness(0) invert(1);
+    }
+
+    /* ── PAGES ── */
+    main { flex: 1; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+
+    .reveal-left { transform: translateX(-40px); }
+    .reveal-right { transform: translateX(40px); }
+    .reveal-scale { transform: scale(0.92); }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateX(0) translateY(0) scale(1);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.45s; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 75% 50%, rgba(139,0,0,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,30,30,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        92deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.008) 2px,
+        rgba(255,255,255,0.008) 3px
+      );
+      pointer-events: none;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, transparent, var(--red) 20%, var(--red) 80%, transparent);
+      z-index: 1;
+    }
+
+    .hero-in {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 40px 80px 60px;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Georgia', serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 28px;
+    }
+
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--red);
+      animation: glow-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 8px var(--red); opacity: 1; }
+      50% { box-shadow: 0 0 20px var(--red), 0 0 40px rgba(255,30,30,0.3); opacity: 0.7; }
+    }
+
+    .hero-h1 {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(56px, 10vw, 130px);
+      letter-spacing: -2px;
+      line-height: 0.88;
+      color: #fff;
+      margin-bottom: 32px;
+      text-shadow: 4px 4px 0 rgba(255,30,30,0.15);
+    }
+
+    .hero-h1 .outline {
+      -webkit-text-stroke: 2px rgba(255,255,255,0.2);
+      color: transparent;
+      display: block;
+    }
+
+    .hero-h1 .solid {
+      display: block;
+      color: #fff;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(234,234,234,0.5);
+      line-height: 1.85;
+      max-width: 460px;
+      border-left: 2px solid var(--red-dark);
+      padding-left: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    }
+
+    .btn-primary:hover {
+      background: var(--red-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,30,30,0.4), 0 0 60px rgba(255,30,30,0.1);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 28px;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.55);
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 3px;
+      background: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255,30,30,0.4);
+      color: var(--red);
+      background: rgba(255,30,30,0.05);
+    }
+
+    .hero-panel { position: relative; }
+
+    .hero-cover-wrap {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+
+    .hero-cover-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(10,10,10,0.8) 100%);
+      z-index: 1;
+    }
+
+    .hero-cover-wrap img {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+      filter: contrast(1.05) saturate(1.1);
+    }
+
+    .hero-cover-wrap:hover img { transform: scale(1.04); }
+
+    .hero-cover-tag {
+      display: inline-block;
+      font-family: 'Georgia', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      background: rgba(10,10,10,0.8);
+      border: 1px solid rgba(255,30,30,0.3);
+      padding: 5px 12px;
+      border-radius: 2px;
+    }
+
+    .hero-cover-wrap::after {
+      content: '';
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 20px; height: 20px;
+      border-top: 2px solid var(--red);
+      border-right: 2px solid var(--red);
+      z-index: 2;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .hero-stat {
+      background: var(--black2);
+      padding: 18px 20px;
+    }
+
+    .hero-stat-num {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 32px;
+      letter-spacing: -1px;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .hero-stat-num em {
+      color: var(--red);
+      font-style: normal;
+    }
+
+    .hero-stat-lbl {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gray2);
+      margin-top: 5px;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .sec-divider {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 56px 0 32px;
+    }
+
+    .sec-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--red-dark) 0%, rgba(255,255,255,0.06) 100%);
+    }
+
+    .sec-divider-label {
+      font-family: 'Georgia', serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gray2);
+      flex-shrink: 0;
+    }
+
+    .sec-divider-num {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+
+    /* ── BAND ── */
+    .band { background: var(--black); }
+
+    .band-in {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ── ARC GRID ── */
+    .arc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 80px;
+    }
+
+    .arc-card {
+      background: var(--black2);
+      cursor: pointer;
+      transition: background var(--t);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .arc-card:hover { background: var(--black3); }
+
+    .arc-card .arc-cover {
+      width: 100%;
+      aspect-ratio: 2/3;
+      overflow: hidden;
+      background: var(--black3);
+      position: relative;
+    }
+
+    .arc-card .arc-cover img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease, filter 0.4s ease;
+      filter: grayscale(0.2) contrast(1.1);
+    }
+
+    .arc-card:hover .arc-cover img {
+      transform: scale(1.03);
+      filter: grayscale(0) contrast(1.15);
+    }
+
+    .arc-card .arc-cover-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, var(--black) 100%);
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+
+    .arc-card:hover .arc-cover-overlay { opacity: 0.3; }
+
+    .arc-card .arc-cover-zoom {
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: rgba(10,10,10,0.7);
+      border: 1px solid rgba(255,30,30,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .arc-card:hover .arc-cover-zoom { opacity: 1; }
+
+    .arc-card .arc-body {
+      padding: 20px 24px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+      border-top: 2px solid var(--black4);
+      position: relative;
+    }
+
+    .arc-card .arc-body::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: 0; right: 0;
+      height: 2px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .arc-card:hover .arc-body::before { transform: scaleX(1); }
+
+    .arc-num {
+      font-family: 'Georgia', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .arc-title {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 1px;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .arc-text {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(234,234,234,0.45);
+      line-height: 1.75;
+      flex: 1;
+    }
+
+    .arc-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .arc-chapters {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray2);
+    }
+
+    .arc-go {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--red);
+      display: flex; align-items: center; gap: 8px;
+      transition: gap 0.2s ease;
+    }
+
+    .arc-card:hover .arc-go { gap: 14px; }
+
+    .arc-card.soon {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* ── SUB BAND ── */
+    .sub-band {
+      background: var(--black2);
+      border-bottom: 1px solid rgba(255,30,30,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sub-band::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--red);
+    }
+
+    .sub-in {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 44px 40px 40px 56px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .bc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--gray);
+      transition: all var(--t);
+    }
+
+    .bc-btn:hover {
+      border-color: rgba(255,30,30,0.3);
+      color: var(--red);
+      background: rgba(255,30,30,0.05);
+    }
+
+    .bc-sep { color: rgba(255,255,255,0.15); font-size: 12px; }
+    .bc-cur { font-size: 12px; color: var(--gray2); letter-spacing: 0.5px; }
+
+    .sub-eyebrow {
+      font-family: 'Georgia', serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 12px;
+    }
+
+    .sub-title {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(32px, 5vw, 56px);
+      letter-spacing: -1px;
+      line-height: 0.95;
+      color: #fff;
+      margin-bottom: 16px;
+      text-shadow: 3px 3px 0 rgba(255,30,30,0.12);
+    }
+
+    .sub-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(234,234,234,0.45);
+      max-width: 500px;
+      line-height: 1.8;
+    }
+
+    /* ── CHAPTER LIST ── */
+    .ch-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-bottom: 80px;
+    }
+
+    .ch-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: var(--black2);
+      border: none;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      flex-wrap: wrap;
+    }
+
+    .ch-item:hover {
+      background: var(--black3);
+      border-left-color: var(--red);
+      padding-left: 30px;
+    }
+
+    .ch-badge {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      background: var(--black3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--gray);
+      transition: all 0.25s ease;
+    }
+
+    .ch-item:hover .ch-badge {
+      background: rgba(255,30,30,0.1);
+      border-color: rgba(255,30,30,0.3);
+      color: var(--red);
+    }
+
+    .ch-info { flex: 1; min-width: 100px; }
+
+    .ch-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    .ch-meta {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--gray2);
+      margin-top: 3px;
+      letter-spacing: 0.3px;
+    }
+
+    .ch-status {
+      flex-shrink: 0;
+      font-family: 'Georgia', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 2px;
+    }
+
+    .ch-status.ready {
+      background: rgba(255,30,30,0.1);
+      color: var(--red);
+      border: 1px solid rgba(255,30,30,0.25);
+    }
+
+    .ch-status.wip {
+      background: rgba(255,255,255,0.03);
+      color: var(--gray2);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .ch-arr {
+      flex-shrink: 0;
+      width: 34px; height: 34px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      color: var(--gray2);
+      transition: all 0.25s ease;
+    }
+
+    .ch-item:hover .ch-arr {
+      background: var(--red);
+      border-color: var(--red);
+      color: white;
+    }
+
+    .ch-coming {
+      padding: 24px;
+      background: var(--black2);
+      border: 1px dashed rgba(255,255,255,0.08);
+      font-family: 'Georgia', serif;
+      font-size: 13px;
+      color: var(--gray2);
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .ch-coming a { color: var(--red); }
+
+    /* ── READER ── */
+    .reader-topbar {
+      background: rgba(10,10,10,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,30,30,0.15);
+      position: sticky;
+      top: 70px;
+      z-index: 90;
+    }
+
+    .reader-bar-in {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 56px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .reader-arc-lbl {
+      font-family: 'Georgia', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .reader-ch-lbl {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .reader-btns { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .r-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--gray);
+      transition: all var(--t);
+      white-space: nowrap;
+    }
+
+    .r-btn:hover:not(:disabled) {
+      border-color: rgba(255,30,30,0.3);
+      color: var(--red);
+      background: rgba(255,30,30,0.05);
+    }
+
+    .r-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    .reader-canvas {
+      background: #141414;
+      padding: 48px 32px;
+      min-height: 60vh;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.012) 40px,
+        rgba(255,255,255,0.012) 41px
+      );
+    }
+
+    .pages-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .comic-page {
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,30,30,0.08);
+    }
+
+    .comic-page img { width: 100%; height: auto; display: block; }
+
+    .page-ph {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: var(--black2);
+      border: 1px solid rgba(255,255,255,0.06);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .ph-icon {
+      width: 60px; height: 60px;
+      border: 1px solid rgba(255,30,30,0.2);
+      background: rgba(255,30,30,0.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+
+    .page-ph p {
+      font-family: 'Georgia', serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: var(--gray2);
+      text-align: center;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,30,30,0.1);
+      margin-bottom: 80px;
+    }
+
+    .about-dark {
+      background: var(--black2);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-dark::before {
+      content: 'THE\ASCRIPT';
+      position: absolute;
+      right: -20px;
+      bottom: -30px;
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 80px;
+      line-height: 0.85;
+      color: rgba(255,255,255,0.015);
+      pointer-events: none;
+      letter-spacing: -2px;
+      white-space: pre;
+    }
+
+    .about-light {
+      background: var(--black3);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .about-kicker {
+      font-family: 'Georgia', serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+
+    .about-h {
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 34px;
+      letter-spacing: -0.5px;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .about-p {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(234,234,234,0.4);
+      line-height: 1.85;
+    }
+
+    .about-blk-title {
+      font-family: 'Georgia', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gray2);
+      margin-bottom: 8px;
+    }
+
+    .about-blk-text {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(234,234,234,0.45);
+      line-height: 1.75;
+    }
+
+    .btn-tg {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      background: var(--red);
+      color: white;
+      border-radius: 2px;
+      font-family: 'Impact', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.25s ease;
+      width: fit-content;
+    }
+
+    .btn-tg:hover {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(255,30,30,0.35);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black2);
+      border-top: 1px solid rgba(255,30,30,0.12);
+    }
+
+    .foot-in {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .foot-copy {
+      font-family: 'Georgia', serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.15);
+    }
+
+    .foot-links { display: flex; gap: 20px; flex-wrap: wrap; }
+
+    .foot-link {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      transition: color var(--t);
+    }
+
+    .foot-link:hover { color: var(--red); }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(5,5,5,0.95);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox-wrap {
+      position: relative;
+      max-width: min(500px, 90vw);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .lightbox.open .lightbox-wrap { transform: scale(1); }
+
+    .lightbox-wrap img {
+      display: block;
+      max-width: 100%;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 2px;
+      box-shadow: 0 30px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,30,30,0.15);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -16px; right: -16px;
+      width: 36px; height: 36px;
+      background: var(--red);
+      border: none;
+      border-radius: 2px;
+      color: white;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255,30,30,0.4);
+      transition: all var(--t);
+    }
+
+    .lightbox-close:hover {
+      background: var(--red-dark);
+      transform: scale(1.1);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .nav-in, .band-in { padding: 0 24px; }
+      .hero-in { padding: 60px 24px 60px 40px; grid-template-columns: 1fr 300px; gap: 40px; }
+      .sub-in { padding: 40px 24px 36px 40px; }
+      .about-dark, .about-light { padding: 36px 28px; }
+      .about-dark::before { font-size: 60px; }
+    }
+
+    @media (max-width: 820px) {
+      .hero-in { grid-template-columns: 1fr; padding: 48px 20px 40px 32px; gap: 28px; }
+      .hero-panel { max-width: 320px; margin: 0 auto; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      .arc-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+      .about-grid { grid-template-columns: 1fr; }
+      .sub-in { padding: 32px 20px 28px 28px; }
+    }
+
+    @media (max-width: 768px) {
+      body { padding-top: 60px; }
+      nav { height: 60px; }
+      .nav-in { padding: 0 16px; height: 60px; }
+      .logo-sub { display: none; }
+      .logo-wordmark { font-size: 15px; letter-spacing: 2px; }
+      .logo-icon { width: 32px; height: 32px; }
+      .logo-icon svg { width: 16px; height: 16px; }
+      .nav-a { padding: 6px 10px; font-size: 10px; letter-spacing: 1px; }
+      .nav-social { width: 30px; height: 30px; }
+      .nav-social img { width: 16px; height: 16px; }
+      .band-in { padding: 0 16px; }
+      .arc-grid { grid-template-columns: 1fr; }
+      .sub-title { font-size: clamp(28px, 6vw, 40px); }
+      .reader-topbar { top: 60px; }
+      .reader-bar-in { padding: 0 16px; height: 48px; flex-wrap: wrap; }
+      .reader-canvas { padding: 28px 16px; }
+      .foot-in { padding: 20px 16px; flex-direction: column; align-items: center; text-align: center; }
+      .foot-links { justify-content: center; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-in { padding: 36px 16px 32px 24px; }
+      .hero-h1 { font-size: clamp(40px, 12vw, 56px); letter-spacing: -1px; }
+      .hero-desc { font-size: 13px; padding-left: 14px; }
+      .hero-actions { flex-direction: column; align-items: stretch; width: 100%; }
+      .hero-actions .btn-primary, .hero-actions .btn-ghost { justify-content: center; width: 100%; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      .hero-stat { padding: 14px 16px; }
+      .hero-stat-num { font-size: 26px; }
+      .arc-card .arc-body { padding: 16px 18px 20px; }
+      .arc-title { font-size: 20px; }
+      .sub-in { padding: 28px 16px 24px 20px; }
+      .sub-title { font-size: clamp(26px, 7vw, 36px); }
+      .ch-item { padding: 16px 16px; gap: 12px; }
+      .ch-badge { width: 34px; height: 34px; font-size: 13px; }
+      .ch-title { font-size: 13px; }
+      .ch-status { font-size: 9px; padding: 4px 10px; }
+      .ch-arr { width: 30px; height: 30px; font-size: 13px; }
+      .about-dark, .about-light { padding: 28px 20px; }
+      .about-h { font-size: 28px; }
+      .about-dark::before { font-size: 44px; }
+      .reader-bar-in { height: auto; padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
+      .reader-btns { justify-content: center; }
+      .r-btn { padding: 5px 10px; font-size: 10px; }
+    }
+
+    @media (max-width: 420px) {
+      body { padding-top: 52px; }
+      nav { height: 52px; }
+      .nav-in { height: 52px; padding: 0 10px; gap: 8px; }
+      .logo-wordmark { font-size: 12px; letter-spacing: 1px; }
+      .logo-icon { width: 26px; height: 26px; }
+      .logo-icon svg { width: 13px; height: 13px; }
+      .nav-a { padding: 4px 6px; font-size: 8px; }
+      .nav-social { width: 24px; height: 24px; }
+      .nav-social img { width: 14px; height: 14px; }
+      .hero-h1 { font-size: clamp(32px, 10vw, 44px); }
+      .hero-desc { font-size: 12px; }
+      .hero-in { padding: 28px 12px 24px 16px; }
+      .hero-stat-num { font-size: 22px; }
+      .hero-stat-lbl { font-size: 8px; letter-spacing: 1.5px; }
+      .arc-title { font-size: 18px; }
+      .arc-text { font-size: 12px; }
+      .ch-badge { width: 30px; height: 30px; font-size: 11px; }
+      .ch-title { font-size: 12px; }
+      .ch-meta { font-size: 10px; }
+      .sub-title { font-size: clamp(22px, 6vw, 30px); }
+      .about-h { font-size: 24px; }
+      .about-p { font-size: 13px; }
+      .page-ph { aspect-ratio: 2/3; }
+      .ph-icon { width: 44px; height: 44px; font-size: 20px; }
+      .page-ph p { font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise-overlay"></div>
+
+  <!-- ── NAV ── -->
+  <nav id="mainNav">
+    <div class="nav-in">
+      <div class="logo" onclick="showPage('main')">
+        <div class="logo-icon">
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="3" width="16" height="2.5" rx="1.25" fill="white"/>
+            <rect x="2" y="8" width="11" height="2.5" rx="1.25" fill="white"/>
+            <rect x="2" y="13" width="14" height="2.5" rx="1.25" fill="white"/>
+            <rect x="2" y="17.5" width="7" height="1.8" rx="0.9" fill="rgba(255,255,255,0.35)"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <div class="logo-wordmark">The Script</div>
+          <div class="logo-sub">веб-комикс</div>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <button class="nav-a active" data-page="main" onclick="showPage('main')">Главная</button>
+        <button class="nav-a" data-page="main" onclick="showPage('main')">Арки</button>
+        <button class="nav-a" data-page="about" onclick="showPage('about')">О проекте</button>
+        <div class="nav-sep"></div>
+        <a class="nav-social" href="https://t.me/comicthescript" target="_blank" title="Telegram">
+          <img src="free-icon-telegram-2111710.png" alt="Telegram">
+        </a>
+        <a class="nav-social" href="https://github.com/veritasiv44-design" target="_blank" title="GitHub">
+          <img src="free-icon-github-2111432.png" alt="GitHub">
+        </a>
+        <a class="nav-social" href="#" title="TikTok (скоро)">
+          <img src="free-icon-tiktok-3669950.png" alt="TikTok">
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ══ ГЛАВНАЯ ══ -->
+    <div class="page active" id="page-main">
+
+      <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-in">
+          <div>
+            <div class="hero-eyebrow reveal">
+              <span class="hero-eyebrow-dot"></span>
+              Оригинальный веб-комикс · 16+
+            </div>
+            <h1 class="hero-h1 reveal reveal-delay-1">
+              <span class="outline">THE</span>
+              <span class="solid">SCRIPT</span>
+            </h1>
+            <p class="hero-desc reveal reveal-delay-2">
+              Графическая история о мире, который кажется идеальным, и людях, которые оказываются там, где не должны были оказаться.
+            </p>
+            <div class="hero-actions reveal reveal-delay-3">
+              <button class="btn-primary" onclick="showPage('arc-1')">
+                Начать читать →
+              </button>
+              <button class="btn-ghost" onclick="showPage('about')">
+                О проекте
+              </button>
+            </div>
+          </div>
+
+          <div class="hero-panel reveal reveal-right reveal-delay-2">
+            <div class="hero-cover-wrap" onclick="openLightbox('arc/thescriptOBfinal.png', event)">
+              <img src="arc/thescriptOBfinal.png" alt="Обложка — Зловещая долина" />
+              <div class="hero-cover-overlay" style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent 50%, rgba(10,10,10,0.8) 100%);z-index:1;"></div>
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;z-index:2;">
+                <span class="hero-cover-tag">Арка 01 · Зловещая долина</span>
+              </div>
+              <div style="position:absolute;top:12px;right:12px;z-index:3;font-size:18px;background:rgba(10,10,10,0.6);border:1px solid rgba(255,30,30,0.25);width:32px;height:32px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s ease;" class="arc-cover-zoom-hero">↗</div>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-num">01<em>.</em></div>
+                <div class="hero-stat-lbl">Арка в работе</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-num">01<em>.</em></div>
+                <div class="hero-stat-lbl">Глава доступна</div>
+              </div>
+              <div class="hero-stat" style="grid-column:span 2;">
+                <div class="hero-stat-num">∞<em>.</em></div>
+                <div class="hero-stat-lbl">Историй впереди</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="band">
+        <div class="band-in">
+          <div class="sec-divider reveal">
+            <div class="sec-divider-num">01</div>
+            <div class="sec-divider-line"></div>
+            <div class="sec-divider-label">Арки</div>
+            <div class="sec-divider-line" style="background: linear-gradient(to left, rgba(255,255,255,0.06) 0%, transparent 100%); flex: 0.3;"></div>
+          </div>
+
+          <div class="arc-grid">
+            <!-- Арка 1 -->
+            <div class="arc-card reveal reveal-delay-1">
+              <div class="arc-cover" onclick="openLightbox('arc/thescriptOBfinal.png', event)">
+                <img src="arc/thescriptOBfinal.png" alt="Обложка арки 1" />
+                <div class="arc-cover-overlay"></div>
+                <div class="arc-cover-zoom">↗</div>
+              </div>
+              <div class="arc-body" onclick="showPage('arc-1')">
+                <div class="arc-num">Арка 01</div>
+                <div class="arc-title">Зловещая долина</div>
+                <div class="arc-text">
+                  История о том, как привычный мир даёт трещину, а за ней открывается нечто, что невозможно объяснить.
+                </div>
+                <div class="arc-foot">
+                  <span class="arc-chapters">1 глава</span>
+                  <span class="arc-go">Читать →</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="arc-card soon reveal reveal-delay-2">
+              <div class="arc-body">
+                <div class="arc-num">Арка 02</div>
+                <div class="arc-title">В разработке</div>
+                <div class="arc-text">Следи за обновлениями.</div>
+                <div class="arc-foot">
+                  <span class="arc-chapters">— глав</span>
+                  <span class="arc-go">Скоро</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ АРКА 1 ══ -->
+    <div class="page" id="page-arc-1">
+
+      <div class="sub-band">
+        <div class="sub-in">
+          <div class="breadcrumb reveal">
+            <button class="bc-btn" onclick="showPage('main')">← Все арки</button>
+            <span class="bc-sep">/</span>
+            <span class="bc-cur">Зловещая долина</span>
+          </div>
+          <div class="sub-eyebrow reveal reveal-delay-1">Арка 01</div>
+          <h2 class="sub-title reveal reveal-delay-2">Зловещая<br>долина</h2>
+          <p class="sub-desc reveal reveal-delay-3">
+            Первая глава начинается там, где всё кажется правильным. Но тишина бывает обманчивой.
+          </p>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="band-in">
+          <div class="sec-divider reveal">
+            <div class="sec-divider-num">01</div>
+            <div class="sec-divider-line"></div>
+            <div class="sec-divider-label">Главы</div>
+            <div class="sec-divider-line" style="background: linear-gradient(to left, rgba(255,255,255,0.06) 0%, transparent 100%); flex: 0.3;"></div>
+          </div>
+          <div class="ch-list">
+            <div class="ch-item reveal reveal-delay-1" onclick="openChapter('arc1-ch1')">
+              <div class="ch-badge">01</div>
+              <div class="ch-info">
+                <div class="ch-title">Самый счастливый день</div>
+                <div class="ch-meta">Глава 1 · Зловещая долина</div>
+              </div>
+              <span class="ch-status ready">Читать</span>
+              <div class="ch-arr">→</div>
+            </div>
+            <div class="ch-coming reveal reveal-delay-2">
+              Следующие главы в разработке. Следи за обновлениями в <a href="https://t.me/comicthescript" target="_blank">Telegram</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ РИДЕР ══ -->
+    <div class="page" id="page-reader">
+
+      <div class="reader-topbar">
+        <div class="reader-bar-in">
+          <div>
+            <div class="reader-arc-lbl" id="reader-arc-label">Арка 1 · Зловещая долина</div>
+            <div class="reader-ch-lbl" id="reader-ch-label">Глава 1 — Самый счастливый день</div>
+          </div>
+          <div class="reader-btns">
+            <button class="r-btn" onclick="showPage('arc-1')">← К главам</button>
+            <button class="r-btn" id="btn-prev" onclick="prevChapter()" disabled>‹ Пред.</button>
+            <button class="r-btn" id="btn-next" onclick="nextChapter()" disabled>След. ›</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="reader-canvas">
+        <div class="pages-wrap" id="pages-container">
+          <div class="page-ph">
+            <div class="ph-icon">📄</div>
+            <p>Страницы появятся совсем скоро</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ О ПРОЕКТЕ ══ -->
+    <div class="page" id="page-about">
+
+      <div class="sub-band">
+        <div class="sub-in">
+          <div class="sub-eyebrow reveal">The Script</div>
+          <h2 class="sub-title reveal reveal-delay-1">О проекте</h2>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="band-in">
+          <div class="sec-divider reveal">
+            <div class="sec-divider-num">—</div>
+            <div class="sec-divider-line"></div>
+            <div class="sec-divider-label">Информация</div>
+            <div class="sec-divider-line" style="background: linear-gradient(to left, rgba(255,255,255,0.06) 0%, transparent 100%); flex: 0.3;"></div>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-dark reveal reveal-left">
+              <div class="about-kicker">Концепция</div>
+              <h3 class="about-h">Мир, в котором<br>живут истории</h3>
+              <p class="about-p">
+                The Script — оригинальный русскоязычный веб-комикс. Каждая арка — это самостоятельная история, но все они связаны одной вселенной. Здесь нет случайностей.
+              </p>
+            </div>
+            <div class="about-light reveal reveal-right">
+              <div>
+                <div class="about-blk-title">Арка 1 — «Зловещая долина»</div>
+                <p class="about-blk-text">
+                  Первая глава откроет дверь в мир, который не терпит вопросов. Но вопросы всё равно будут.
+                </p>
+              </div>
+              <div>
+                <div class="about-blk-title">Формат</div>
+                <p class="about-blk-text">
+                  Бесплатный веб-комикс. Новые главы выходят по мере готовности.
+                </p>
+              </div>
+              <div>
+                <div class="about-blk-title">Следи за обновлениями</div>
+                <a class="btn-tg" href="https://t.me/comicthescript" target="_blank">
+                  Telegram-канал →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span class="foot-copy">© 2024 veritas — The Script</span>
+      <div class="foot-links">
+        <a class="foot-link" href="https://t.me/comicthescript" target="_blank">Telegram</a>
+        <a class="foot-link" href="https://github.com/veritasiv44-design" target="_blank">GitHub</a>
+        <a class="foot-link" href="#" onclick="showPage('about');return false;">О проекте</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-wrap" id="lightbox-wrap">
+      <img id="lightbox-img" src="" alt="Обложка" />
+      <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    </div>
+  </div>
+
+  <script>
+    // ── PAGES ──
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page-' + id);
+      if (target) {
+        target.classList.add('active');
+        setTimeout(() => observeReveal(), 50);
+      }
+      document.querySelectorAll('.nav-a').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === id);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── SCROLL REVEAL ──
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) el.target.classList.add('visible');
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    function observeReveal() {
+      document.querySelectorAll('.page.active .reveal').forEach(el => {
+        revealObserver.observe(el);
+      });
+    }
+
+    observeReveal();
+
+    // ── NAV SCROLL ──
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // ── HERO COVER ZOOM ──
+    const heroCoverWrap = document.querySelector('.hero-cover-wrap');
+    const heroZoom = document.querySelector('.arc-cover-zoom-hero');
+    if (heroCoverWrap && heroZoom) {
+      heroCoverWrap.addEventListener('mouseenter', () => heroZoom.style.opacity = '1');
+      heroCoverWrap.addEventListener('mouseleave', () => heroZoom.style.opacity = '0');
+    }
+
+    // ── LIGHTBOX ──
+    function openLightbox(src, e) {
+      if (e) e.stopPropagation();
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+      if (e && document.getElementById('lightbox-wrap').contains(e.target) &&
+          e.target !== document.getElementById('lightbox')) return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // ── CHAPTERS ──
+    const chapters = {
+      'arc1-ch1': {
+        title: 'Глава 1 — Самый счастливый день',
+        prev: null, next: null,
+        pages: []
+      }
+    };
+
+    let currentChapter = null;
+
+    function openChapter(id) {
+      const ch = chapters[id];
+      if (!ch) return;
+      currentChapter = id;
+      document.getElementById('reader-arc-label').textContent = 'Арка 1 · Зловещая долина';
+      document.getElementById('reader-ch-label').textContent = ch.title;
+      document.getElementById('btn-prev').disabled = !ch.prev;
+      document.getElementById('btn-next').disabled = !ch.next;
+
+      const container = document.getElementById('pages-container');
+      container.innerHTML = '';
+
+      if (ch.pages && ch.pages.length) {
+        ch.pages.forEach((src, i) => {
+          const div = document.createElement('div');
+          div.className = 'comic-page';
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = 'Страница ' + (i + 1);
+          img.loading = 'lazy';
+          div.appendChild(img);
+          container.appendChild(div);
+        });
+      } else {
+        container.innerHTML = '<div class="page-ph"><div class="ph-icon">📄</div><p>Страницы появятся совсем скоро</p></div>';
+      }
+
+      showPage('reader');
+    }
+
+    function prevChapter() {
+      const ch = chapters[currentChapter];
+      if (ch && ch.prev) openChapter(ch.prev);
+    }
+
+    function nextChapter() {
+      const ch = chapters[currentChapter];
+      if (ch && ch.next) openChapter(ch.next);
+    }
+
+    // ── BROKEN COVER GUARD ──
+    document.querySelectorAll('.arc-cover img, .hero-cover-wrap img').forEach(img => {
+      img.onerror = function () {
+        this.style.display = 'none';
+        const parent = this.closest('.arc-cover') || this.closest('.hero-cover-wrap');
+        if (parent) {
+          parent.style.background = '#1a1a1a';
+          const ph = document.createElement('div');
+          ph.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;min-height:200px;font-family:Georgia,serif;font-size:12px;letter-spacing:2px;color:#555;text-align:center;padding:20px;';
+          ph.textContent = 'ОБЛОЖКА СКОРО';
+          parent.appendChild(ph);
+        }
+      };
+    });
+  </script>
+</body>
+</html>
