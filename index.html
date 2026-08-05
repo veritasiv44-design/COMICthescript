@@ -34,16 +34,16 @@
     }
 
     [data-theme="light"] {
-      --bg:       #b2b1b1;
-      --bg2:      #d4d3d3;
-      --bg3:      #bbb8b8;
-      --bg4:      #d0d0d0;
-      --border:   rgba(0, 0, 0, 0.282);
-      --border2:  rgba(0, 0, 0, 0.996);
+      --bg:       #F0F0F0;
+      --bg2:      #E4E4E4;
+      --bg3:      #D8D8D8;
+      --bg4:      #CCCCCC;
+      --border:   rgba(0,0,0,0.1);
+      --border2:  rgba(0,0,0,0.2);
       --text:     #0D0D0D;
-      --text2:    rgb(13, 13, 13);
-      --text3:    rgb(13, 13, 13);
-      --nav-bg:   rgba(233, 233, 233, 0.9);
+      --text2:    rgba(13,13,13,0.65);
+      --text3:    rgba(13,13,13,0.40);
+      --nav-bg:   rgba(240,240,240,0.9);
       --card-bg:  #E4E4E4;
     }
     /* Light theme explicit overrides for hardcoded colors */
@@ -111,17 +111,20 @@
       box-shadow: 0 4px 40px rgba(0,0,0,0.35);
       border-bottom-color: var(--border2);
     }
-    [data-theme="light"] nav.scrolled { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.996); }
+    [data-theme="light"] nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
 
     .nav-in {
       max-width: 1240px; margin: 0 auto;
       padding: 0 36px; height: 68px;
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     /* Logo */
     .logo {
-      display: flex; align-items: center; gap: 12px;
+      display: flex; align-items: center; gap: 10px;
       cursor: pointer; user-select: none; flex-shrink: 0;
       transition: opacity var(--t);
     }
@@ -152,15 +155,24 @@
 
     /* Nav links */
     .nav-center {
-      display: flex; align-items: center; gap: 2px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 1;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .nav-center::-webkit-scrollbar { display: none; }
+
     .nav-a {
-      padding: 7px 13px; border-radius: var(--r);
+      padding: 7px 12px; border-radius: var(--r);
       font-size: 11px; font-weight: 700;
-      letter-spacing: 1.8px; text-transform: uppercase;
+      letter-spacing: 1.6px; text-transform: uppercase;
       color: var(--text2); background: none; border: none;
       transition: color var(--t), background var(--t);
       position: relative; white-space: nowrap;
+      flex-shrink: 0;
     }
     .nav-a::after {
       content: '';
@@ -174,14 +186,20 @@
     .nav-a.active::after, .nav-a:hover::after { transform: translateX(-50%) scaleX(1); }
 
     /* Nav right */
-    .nav-right { display: flex; align-items: center; gap: 6px; }
-    .nav-sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .nav-sep { width: 1px; height: 24px; background: var(--border); margin: 0 2px; }
 
     .nav-social {
       width: 34px; height: 34px;
       display: flex; align-items: center; justify-content: center;
       border-radius: var(--r); border: 1px solid transparent;
       opacity: 0.4; transition: all 0.22s ease;
+      flex-shrink: 0;
     }
     .nav-social:hover {
       opacity: 1;
@@ -201,6 +219,7 @@
       background: none;
       color: var(--text2);
       transition: all 0.22s ease;
+      flex-shrink: 0;
     }
     .theme-btn:hover { color: var(--text); border-color: var(--border2); background: var(--border); }
     .theme-btn svg { width: 16px; height: 16px; fill: currentColor; display: block; transition: transform 0.35s ease; }
@@ -875,26 +894,77 @@
       .hero-cover-wrap { max-width: 280px; }
       .about-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── МОБИЛЬНЫЙ ХЕДЕР (АДАПТИВ) ── */
     @media (max-width: 768px) {
-      body { padding-top: 58px; }
-      nav { height: 58px; }
-      .nav-in { padding: 0 16px; height: 58px; }
+      body { padding-top: 56px; }
+      nav { height: 56px; }
+      .nav-in {
+        padding: 0 12px;
+        height: 56px;
+        gap: 6px;
+      }
+
+      .logo { gap: 6px; flex-shrink: 0; }
       .logo-tag { display: none; }
-      .logo-name { font-size: 14px; letter-spacing: 2px; }
-      .logo-mark { width: 30px; height: 30px; }
-      .nav-a { padding: 5px 8px; font-size: 10px; letter-spacing: 1px; }
-      .nav-social { width: 30px; height: 30px; }
-      .theme-btn { width: 30px; height: 30px; font-size: 13px; }
+      .logo-name {
+        font-size: 13px;
+        letter-spacing: 1.5px;
+      }
+      .logo-mark {
+        width: 28px;
+        height: 28px;
+      }
+      .logo-mark svg { width: 14px; height: 14px; }
+
+      .nav-a {
+        padding: 4px 8px;
+        font-size: 9px;
+        letter-spacing: 1.2px;
+        flex-shrink: 0;
+      }
+      .nav-a::after { width: 12px; bottom: 2px; }
+
+      .nav-right { gap: 3px; }
+      .nav-social {
+        width: 28px;
+        height: 28px;
+      }
+      .nav-social img { width: 14px; height: 14px; }
+
+      .theme-btn {
+        width: 28px;
+        height: 28px;
+      }
+      .theme-btn svg { width: 14px; height: 14px; }
+
+      .nav-sep { margin: 0 2px; height: 18px; }
+
+      /* остальные секции — адаптив */
       .wrap { padding: 0 16px; }
       .arc-grid { grid-template-columns: 1fr; }
-      .reader-bar { top: 58px; }
-      .reader-bar-in { padding: 0 16px; }
-      .reader-canvas { padding: 28px 16px; }
-      .foot-top-in { grid-template-columns: 1fr 1fr; padding: 36px 16px 32px; gap: 28px; }
+      .reader-bar { top: 56px; }
+      .reader-bar-in { padding: 0 16px; height: 50px; }
+      .reader-canvas { padding: 24px 16px; }
+      .foot-top-in { grid-template-columns: 1fr 1fr; padding: 32px 16px 28px; gap: 24px; }
       .foot-brand { grid-column: span 2; }
-      .foot-bottom-in { padding: 14px 16px; flex-direction: column; align-items: center; text-align: center; }
+      .foot-bottom-in { padding: 12px 16px; flex-direction: column; align-items: center; text-align: center; }
       .foot-socials { justify-content: center; }
     }
+
+    @media (max-width: 480px) {
+      .nav-in { padding: 0 8px; gap: 4px; }
+      .logo-name { font-size: 11px; letter-spacing: 1px; }
+      .logo-mark { width: 24px; height: 24px; }
+      .logo-mark svg { width: 12px; height: 12px; }
+      .nav-a { padding: 3px 5px; font-size: 7px; letter-spacing: 0.8px; }
+      .nav-social { width: 24px; height: 24px; }
+      .nav-social img { width: 12px; height: 12px; }
+      .theme-btn { width: 24px; height: 24px; }
+      .theme-btn svg { width: 12px; height: 12px; }
+      .nav-sep { display: none; }
+    }
+
     @media (max-width: 560px) {
       .hero-in { padding: 36px 16px 32px 20px; }
       .hero-h1 { font-size: clamp(44px, 14vw, 62px); letter-spacing: -2px; }
@@ -907,6 +977,7 @@
       .foot-top-in { grid-template-columns: 1fr; }
       .foot-brand { grid-column: span 1; }
     }
+
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
       [data-reveal] { opacity: 1 !important; transform: none !important; }
@@ -943,9 +1014,7 @@
 
     <div class="nav-right">
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">
-        <!-- moon icon shown in dark mode -->
         <svg id="icon-moon" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23Z"/></svg>
-        <!-- sun icon shown in light mode -->
         <svg id="icon-sun" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="display:none"><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></svg>
       </button>
       <div class="nav-sep"></div>
